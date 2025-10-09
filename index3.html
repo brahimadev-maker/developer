@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mx Chimie - Laboratoire de Chimie en Réalité Mixte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #00f5ff, #ff6b6b, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #a0a0a0;
+            font-weight: 300;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+
+        .content-left {
+            animation: slideInLeft 1s ease-out 0.5s both;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.2);
+            border-color: rgba(0, 245, 255, 0.5);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00f5ff, #0066ff);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #00f5ff;
+        }
+
+        .feature-description {
+            color: #b0b0b0;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .vr-showcase {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: slideInRight 1s ease-out 0.7s both;
+        }
+
+        .vr-headset {
+            width: 400px;
+            height: 300px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 30px;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            transform: perspective(1000px) rotateX(15deg) rotateY(-10deg);
+            transition: transform 0.3s ease;
+        }
+
+        .vr-headset:hover {
+            transform: perspective(1000px) rotateX(10deg) rotateY(-5deg) scale(1.05);
+        }
+
+        .vr-screen {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            right: 50px;
+            bottom: 50px;
+            background: linear-gradient(135deg, #0066ff, #00f5ff);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .chemistry-sim {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .molecule-3d {
+            font-size: 80px;
+            animation: rotate3d 4s linear infinite;
+            filter: drop-shadow(0 0 20px rgba(0, 245, 255, 0.8));
+        }
+
+        @keyframes rotate3d {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            33% { transform: rotateX(120deg) rotateY(120deg); }
+            66% { transform: rotateX(240deg) rotateY(240deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00f5ff;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .particle:nth-child(odd) {
+            background: #ff6b6b;
+            animation-duration: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.7; }
+            50% { transform: translateY(-30px) translateX(20px); opacity: 1; }
+        }
+
+        .tech-specs {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(255, 107, 107, 0.1));
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .tech-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #00f5ff, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tech-description {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00f5ff, #0066ff);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 245, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ff6b6b;
+            border: 2px solid #ff6b6b;
+            padding: 13px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: #ff6b6b;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+
+            .vr-headset {
+                width: 300px;
+                height: 225px;
+            }
+
+            .molecule-3d {
+                font-size: 60px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <div class="hero-section">
+            <h1 class="hero-title">Mx Chimie</h1>
+            <p class="hero-subtitle">Laboratoire de Chimie en Réalité Mixte</p>
+        </div>
+
+        <div class="main-content">
+            <div class="content-left">
+                <div class="feature-card">
+                    <div class="feature-icon">🧪</div>
+                    <h3 class="feature-title">Intégrer</h3>
+                    <p class="feature-description">
+                        Tous les cours de <span class="highlight">chimie ivoirienne</span> dans un environnement interactif et immersif
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚛️</div>
+                    <h3 class="feature-title">Simuler</h3>
+                    <p class="feature-description">
+                        Les réactions chimiques dans un <span class="highlight">environnement virtuel sécurisé</span> avec des effets 3D réalistes
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔬</div>
+                    <h3 class="feature-title">Suivre</h3>
+                    <p class="feature-description">
+                        Des instructions <span class="highlight">étape par étape</span> pour réaliser des expériences en réalité mixte
+                    </p>
+                </div>
+            </div>
+
+            <div class="vr-showcase">
+                <div class="vr-headset">
+                    <div class="vr-screen">
+                        <div class="chemistry-sim">
+                            <div class="molecule-3d">🧬</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="floating-particles">
+                    <div class="particle" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+                    <div class="particle" style="top: 60%; left: 80%; animation-delay: 1s;"></div>
+                    <div class="particle" style="top: 80%; left: 20%; animation-delay: 2s;"></div>
+                    <div class="particle" style="top: 40%; left: 90%; animation-delay: 1.5s;"></div>
+                    <div class="particle" style="top: 10%; left: 70%; animation-delay: 0.5s;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tech-specs">
+            <h2 class="tech-title">Laboratoire de Chimie en Réalité Mixte</h2>
+            <p class="tech-description">
+                Découvrez la première application de laboratoire chimique déployée sur casque de réalité mixte. 
+                Une expérience révolutionnaire qui transforme l'apprentissage de la chimie en Côte d'Ivoire.
+            </p>
+            <div class="cta-buttons">
+                <button class="btn-primary" onclick="showVRDemo()">
+                    Essayer la VR 🥽
+                </button>
+                <button class="btn-secondary" onclick="showFeatures()">
+                    En savoir plus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Génération des étoiles
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = (Math.random() * 3 + 1) + 'px';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Fonctions de démonstration
+        function showVRDemo() {
+            alert('🥽 Expérience VR bientôt disponible !\n\nPlongez dans un laboratoire virtuel complet avec :\n• Manipulation d\'objets 3D\n• Réactions chimiques réalistes\n• Environnement sécurisé\n• Apprentissage immersif');
+        }
+
+        function showFeatures() {
+            alert('🚀 Fonctionnalités avancées :\n\n✓ Réalité Mixte sur casque\n✓ Simulations 3D interactives\n✓ Cours intégrés programme ivoirien\n✓ Expériences sans danger\n✓ Suivi des progrès\n✓ Interface intuitive');
+        }
+
+        // Effet parallaxe sur les particules
+        document.addEventListener('mousemove', (e) => {
+            const particles = document.querySelectorAll('.particle');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            particles.forEach((particle, index) => {
+                const speed = (index + 1) * 0.3;
+                const xPos = (x - 0.5) * speed * 30;
+                const yPos = (y - 0.5) * speed * 30;
+                
+                particle.style.transform = `translate(${xPos}px, ${yPos}px)`;
+            });
+        });
+
+        // Animation au scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            
+            // Observer les éléments pour l'animation
+            document.querySelectorAll('.feature-card, .tech-specs').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

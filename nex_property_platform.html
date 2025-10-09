@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>neX - Votre Maison Idéale</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --gray: #6b7280;
+            --white: #ffffff;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            background: var(--gradient);
+            color: white;
+            padding: 6rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.1)" points="0,1000 1000,1000 1000,200 0,800"/></svg>');
+            background-size: cover;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .search-bar {
+            background: white;
+            padding: 1rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 10px;
+            background: var(--light);
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: var(--dark);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+            transition: left 0.5s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 0;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        /* Properties Section */
+        .properties {
+            padding: 6rem 0;
+            background: var(--light);
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .property-image {
+            height: 250px;
+            background: var(--gradient);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .property-price {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .property-content {
+            padding: 1.5rem;
+        }
+
+        .property-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .property-location {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .property-features {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-badge {
+            background: var(--light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        /* Authentication Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .modal h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--light);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            margin-top: 80px;
+            padding: 2rem 0;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            background: var(--light);
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .dashboard-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Psychological Design Elements */
+        .trust-indicators {
+            padding: 4rem 0;
+            background: white;
+            text-align: center;
+        }
+
+        .trust-grid {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .trust-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .trust-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .trust-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">neX</div>
+            <ul class="nav-links">
+                <li><a href="#home">Accueil</a></li>
+                <li><a href="#properties">Propriétés</a></li>
+                <li><a href="#about">À propos</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn btn-outline" onclick="showLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Connexion
+                </button>
+                <button class="btn btn-primary" onclick="showRegister()">
+                    <i class="fas fa-user-plus"></i> S'inscrire
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="floating-elements">
+                <div class="floating-element" style="width: 60px; height: 60px; top: 20%; left: 10%; animation-delay: 0s;"></div>
+                <div class="floating-element" style="width: 80px; height: 80px; top: 60%; right: 15%; animation-delay: 2s;"></div>
+                <div class="floating-element" style="width: 40px; height: 40px; top: 30%; right: 25%; animation-delay: 4s;"></div>
+            </div>
+            <div class="hero-content">
+                <h1>Trouvez Votre Maison Idéale</h1>
+                <p>Découvrez des propriétés exceptionnelles avec neX, la plateforme qui connecte propriétaires et futurs habitants en toute simplicité et sécurité.</p>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Localisation, type de bien...">
+                    <select class="search-input">
+                        <option>Type de bien</option>
+                        <option>Maison</option>
+                        <option>Appartement</option>
+                        <option>Villa</option>
+                    </select>
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i> Rechercher
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Indicators -->
+        <section class="trust-indicators">
+            <div class="container">
+                <h2 class="section-title">Ils nous font confiance</h2>
+                <div class="trust-grid">
+                    <div class="trust-item">
+                        <div class="trust-number">10,000+</div>
+                        <div class="trust-label">Propriétés listées</div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-number">25,000+</div>
+                        <div class="trust-label">Utilisateurs actifs</div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-number">98%</div>
+                        <div class="trust-label">Satisfaction client</div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-number">24/7</div>
+                        <div class="trust-label">Support disponible</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Pourquoi choisir neX ?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Recherche Intelligente</h3>
+                        <p>Trouvez rapidement la propriété parfaite grâce à nos filtres avancés et notre géolocalisation précise.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Sécurité Garantie</h3>
+                        <p>Toutes les transactions et communications sont sécurisées avec les dernières technologies de cryptage.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Communication Directe</h3>
+                        <p>Échangez directement avec les propriétaires via notre messagerie intégrée sécurisée.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Mobile First</h3>
+                        <p>Accédez à toutes les fonctionnalités depuis votre smartphone, où que vous soyez.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Analytics Avancées</h3>
+                        <p>Suivez les performances de vos annonces avec des statistiques détaillées en temps réel.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Favoris & Alertes</h3>
+                        <p>Sauvegardez vos coups de cœur et recevez des alertes pour les nouvelles propriétés.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Properties Section -->
+        <section class="properties" id="properties">
+            <div class="container">
+                <h2 class="section-title">Propriétés en vedette</h2>
+                <div class="properties-grid">
+                    <div class="property-card">
+                        <div class="property-image">
+                            <i class="fas fa-home"></i>
+                            <div class="property-price">450,000 €</div>
+                        </div>
+                        <div class="property-content">
+                            <h3 class="property-title">Villa Moderne avec Piscine</h3>
+                            <div class="property-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Cannes, France
+                            </div>
+                            <div class="property-features">
+                                <span class="feature-badge">4 chambres</span>
+                                <span class="feature-badge">3 SDB</span>
+                                <span class="feature-badge">250 m²</span>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-eye"></i> Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="property-card">
+                        <div class="property-image">
+                            <i class="fas fa-building"></i>
+                            <div class="property-price">1,200 €/mois</div>
+                        </div>
+                        <div class="property-content">
+                            <h3 class="property-title">Appartement Centre-Ville</h3>
+                            <div class="property-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Paris 8ème, France
+                            </div>
+                            <div class="property-features">
+                                <span class="feature-badge">2 chambres</span>
+                                <span class="feature-badge">1 SDB</span>
+                                <span class="feature-badge">85 m²</span>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-eye"></i> Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="property-card">
+                        <div class="property-image">
+                            <i class="fas fa-tree"></i>
+                            <div class="property-price">320,000 €</div>
+                        </div>
+                        <div class="property-content">
+                            <h3 class="property-title">Maison de Campagne</h3>
+                            <div class="property-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Provence, France
+                            </div>
+                            <div class="property-features">
+                                <span class="feature-badge">3 chambres</span>
+                                <span class="feature-badge">2 SDB</span>
+                                <span class="feature-badge">180 m²</span>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-eye"></i> Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Dashboard (Hidden by default) -->
+    <div id="dashboard" class="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>Tableau de bord</h1>
+                <p>Bienvenue sur votre espace personnel neX</p>
+            </div>
+            
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" onclick="showTab('overview')">Vue d'ensemble</button>
+                <button class="tab-btn" onclick="showTab('properties')">Mes propriétés</button>
+                <button class="tab-btn" onclick="showTab('favorites')">Favoris</button>
+                <button class="tab-btn" onclick="showTab('messages')">Messages</button>
+                <button class="tab-btn" onclick="showTab('profile')">Profil</button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div id="tab-overview">
+                    <h3>Vue d'ensemble</h3>
+                    <p>Statistiques de votre compte et activités récentes.</p>
+                </div>
+                <div id="tab-properties" style="display: none;">
+                    <h3>Mes propriétés</h3>
+                    <p>Gérez vos annonces immobilières.</p>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Ajouter une propriété
+                    </button>
+                </div>
+                <div id="tab-favorites" style="display: none;">
+                    <h3>Mes favoris</h3>
+                    <p>Retrouvez toutes vos propriétés favorites.</p>
+                </div>
+                <div id="tab-messages" style="display: none;">
+                    <h3>Messages</h3>
+                    <p>Consultez vos conversations avec les propriétaires et clients.</p>
+                </div>
+                <div id="tab-profile" style="display: none;">
+                    <h3>Mon profil</h3>
+                    <p>Modifiez vos informations personnelles.</p>
+                    <button class="btn btn-outline" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Se déconnecter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Modals -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('loginModal')">&times;</button>
+            <h2>Connexion</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">
+                Pas encore inscrit ? <a href="#" onclick="showRegister()" style="color: var(--primary);">Créer un compte</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('registerModal')">&times;</button>
+            <h2>Inscription</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Type de compte</label>
+                    <select id="userType" style="width: 100%; padding: 0.75rem; border: 2px solid var(--light); border-radius: 10px;">
+                        <option value="client">Client</option>
+                        <option value="owner">Propriétaire</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nom complet</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-user-plus"></i> S'inscrire
+                </button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">
+                Déjà inscrit ? <a href="#" onclick="showLogin()" style="color: var(--primary);">Se connecter</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let isLoggedIn = false;
+
+        // Modal functions
+        function showLogin() {
+            document.getElementById('loginModal').style.display = 'block';
+            document.getElementById('registerModal').style.display = 'none';
+        }
+
+        function showRegister() {
+            document.getElementById('registerModal').style.display = 'block';
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Dashboard tab switching
+        function showTab(tabId) {
+            // Hide all tabs
+            const tabs = ['overview', 'properties', 'favorites', 'messages', 'profile'];
+            tabs.forEach(id => {
+                document.getElementById(`tab-${id}`).style.display = 'none';
+                document.querySelector(`button[onclick="showTab('${id}')"]`).classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+            document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        // Login handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Simulated authentication (replace with actual API call)
+            if (email && password) {
+                currentUser = { email };
+                isLoggedIn = true;
+                updateUIAfterLogin();
+                closeModal('loginModal');
+                alert('Connexion réussie !');
+            } else {
+                alert('Veuillez remplir tous les champs.');
+            }
+        });
+
+        // Register handler
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userType = document.getElementById('userType').value;
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            // Simulated registration (replace with actual API call)
+            if (userType && name && email && password) {
+                currentUser = { userType, name, email };
+                isLoggedIn = true;
+                updateUIAfterLogin();
+                closeModal('registerModal');
+                alert('Inscription réussie ! Bienvenue sur neX.');
+            } else {
+                alert('Veuillez remplir tous les champs.');
+            }
+        });
+
+        // Logout handler
+        function logout() {
+            currentUser = null;
+            isLoggedIn = false;
+            updateUIAfterLogout();
+            alert('Déconnexion réussie.');
+        }
+
+        // Update UI after login
+        function updateUIAfterLogin() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.querySelector('.nav-buttons').innerHTML = `
+                <button class="btn btn-outline" onclick="showDashboard()">
+                    <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                </button>
+                <button class="btn btn-primary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            `;
+        }
+
+        // Update UI after logout
+        function updateUIAfterLogout() {
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.querySelector('.nav-buttons').innerHTML = `
+                <button class="btn btn-outline" onclick="showLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Connexion
+                </button>
+                <button class="btn btn-primary" onclick="showRegister()">
+                    <i class="fas fa-user-plus"></i> S'inscrire
+                </button>
+            `;
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            if (isLoggedIn) {
+                document.getElementById('main-content').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+            } else {
+                showLogin();
+            }
+        }
+
+        // Search handler
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            const location = document.querySelector('.search-input[type="text"]').value;
+            const propertyType = document.querySelector('.search-input[type="select-one"]').value;
+            alert(`Recherche pour: ${location || 'Tous lieux'}, ${propertyType || 'Tous types'}`);
+            // Implement actual search functionality here
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
