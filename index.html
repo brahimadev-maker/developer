@@ -1556,7 +1556,7 @@
     const resultSection = document.getElementById("brai-result-section");
 
     // Nettoyage du texte
-    const cleanText = text.replace(/[*_`~]/g, ""); // retire *, _, `, ~
+    const cleanText = text.replace(/[*_`~]/g, ""); 
 
     result.textContent = cleanText;
     result.classList.toggle("error", isError);
