@@ -1509,7 +1509,7 @@
                 updateBrAIStats(endTime - startTime);
                 
                 displayBrAIResult(
-                    `Désolé, une erreur s'est produite.\n\nCette démo simule une interaction avec mon assistant IA. Dans un environnement réel, elle serait connectée à mon API personnalisée.\n\nErreur: ${error.message}`,
+                    `Désolé, une erreur s'est produite.\n\nCette démo simule une interaction avec mon assistant IA. Dans un environnement réel .\n\nErreur: ${error.message}`,
                     true
                 );
             } finally {
@@ -1531,7 +1531,7 @@
             body: JSON.stringify({ text: prompt })
         });
         const data = await response.json();
-        console.log('Les donnes reucs' , data)
+     
         
         // Retourne la réponse de l’API si dispo
         document.getElementById('brai-prompt').value="";
@@ -1539,7 +1539,7 @@
     } catch (error) {
         // En cas d’erreur (API inaccessible), fallback sur les réponses personnalisées
         const lowerPrompt = prompt.toLowerCase();
-        return "Un erreur s'est produite !"
+        return "Veillez réesayer , une erreur s'est produite !"
     }
 }
 
@@ -1551,21 +1551,25 @@
             document.getElementById("brai-result-section").classList.remove("active");
         }
 
-        function displayBrAIResult(text, isError = false) {
-            const result = document.getElementById("brai-result");
-            const resultSection = document.getElementById("brai-result-section");
-            
-            result.textContent = text;
-            result.classList.toggle("error", isError);
-            resultSection.classList.add("active");
-            
-            setTimeout(() => {
-                resultSection.scrollIntoView({ 
-                    behavior: "smooth", 
-                    block: "start" 
-                });
-            }, 100);
-        }
+   function displayBrAIResult(text, isError = false) {
+    const result = document.getElementById("brai-result");
+    const resultSection = document.getElementById("brai-result-section");
+
+    // Nettoyage du texte
+    const cleanText = text.replace(/[*_`~]/g, ""); // retire *, _, `, ~
+
+    result.textContent = cleanText;
+    result.classList.toggle("error", isError);
+    resultSection.classList.add("active");
+
+    setTimeout(() => {
+        resultSection.scrollIntoView({ 
+            behavior: "smooth", 
+            block: "start" 
+        });
+    }, 100);
+}
+
 
         function disableBrAIButton(disable) {
             braiSendBtn.disabled = disable;

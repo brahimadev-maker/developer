@@ -7,7 +7,7 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: "https://brahima-dev-portfolio.vercel.app" }));
 
 // ==== CONFIG ====
 const API_KEY = process.env.GEMINI_API_KEY;
@@ -292,9 +292,8 @@ Je serai ravi de vous rencontrer. À bientôt !`;
 // ==== ROUTES ====
 app.get("/", (req, res) => {
   res.json({ 
-    status: "OK", 
-    message: "API Chatbot Brahima Diarrassouba",
-    version: "2.0"
+    status: "Your acces is denied", 
+    message: "Pls contact Brahima Diarrassouba the developer",
   });
 });
 
