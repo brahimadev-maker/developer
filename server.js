@@ -15,6 +15,9 @@ const APP_PASSWORD = process.env.APP_PASSWORD;
 const TO_MAIL = process.env.TO_MAIL;
 const PORT = process.env.PORT || 3002;
 
+
+console.log(API_KEY,AI_MAIL,APP_PASSWORD,TO_MAIL,PORT)
+
 // ==== TRANSPORTEUR NODEMAILER (GMAIL) ====
 const transporter = nodemailer.createTransport({
   service: "gmail",
