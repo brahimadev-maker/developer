@@ -271,6 +271,7 @@ async function handleInterviewFlow(userMessage) {
     
     // Envoi du mail
     const { text, html } = buildInterviewMail(interviewData);
+    print('Envoi du mail')
     await sendMail("🎯 Proposition d'entretien - Brahima Diarrassouba", text, html);
     
     // Reset
