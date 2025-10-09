@@ -114,6 +114,9 @@ async function handleInterviewFlow(userMessage) {
   return null;
 }
 
+app.get("/",(req,res)=>{
+  res.send("Hello word")
+})
 // ==== ROUTE IA ====
 app.post("/generate", async (req, res) => {
   try {
