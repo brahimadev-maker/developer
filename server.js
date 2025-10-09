@@ -172,6 +172,4 @@ app.post("/reset-history", (req, res) => {
 });
 
 // ==== LANCEMENT SERVEUR ====
-app.listen(PORT, () =>
-  console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`)
-);
+app.listen();
