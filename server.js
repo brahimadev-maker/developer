@@ -1,8 +1,10 @@
 const express = require("express");
-const fetch = require("node-fetch");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
+
+// Import correct pour node-fetch v2 (CommonJS)
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const app = express();
 app.use(express.json());
@@ -18,6 +20,7 @@ const PORT = process.env.PORT || 3002;
 console.log("========================================");
 console.log("🔧 CONFIGURATION DU SERVEUR");
 console.log("========================================");
+console.log("✅ Node version:", process.version);
 console.log("✅ API_KEY présente:", !!API_KEY);
 console.log("✅ AI_MAIL:", AI_MAIL || "NON DÉFINI");
 console.log("✅ APP_PASSWORD présent:", !!APP_PASSWORD);
@@ -165,12 +168,10 @@ async function handleInterviewFlow(userMessage) {
     interviewData.mode = userMessage;
     console.log("État complet:", JSON.stringify(interviewData, null, 2));
 
-    // Toutes les infos réunies → envoyer le mail
     console.log("✉️ Toutes les informations collectées, envoi du mail...");
     const { text, html } = buildInterviewMail(interviewData);
     await sendMail("📅 Proposition d'entretien", text, html);
 
-    // Reset après envoi
     console.log("🔄 Réinitialisation des données d'entretien");
     interviewData = { heure: null, lieu: null, mode: null, inProgress: false };
     console.log("État après reset:", JSON.stringify(interviewData, null, 2));
@@ -209,8 +210,7 @@ app.post("/generate", async (req, res) => {
       return res.status(400).json({ error: "Message vide" });
     }
 
-    // Vérifier mode entretien
-    console.log("\n🔄 Vérification  mode entretien...");
+    console.log("\n🔄 Vérification du mode entretien...");
     const interviewReply = await handleInterviewFlow(userMessage);
     
     if (interviewReply) {
@@ -221,13 +221,10 @@ app.post("/generate", async (req, res) => {
       return res.json(interviewReply);
     }
 
-    // Ajouter message user
     console.log("\n📝 Ajout du message utilisateur à l'historique");
     conversationHistory.push({ role: "user", content: userMessage });
     console.log("📚 Taille de l'historique:", conversationHistory.length);
-    console.log("Historique complet:", JSON.stringify(conversationHistory, null, 2));
 
-    // Construire prompt complet
     console.log("\n🔨 Construction du prompt complet...");
     let fullPrompt = context + "\n\n";
     for (let msg of conversationHistory) {
@@ -235,27 +232,27 @@ app.post("/generate", async (req, res) => {
         ? `Utilisateur : ${msg.content}\n`
         : `Brahima : ${msg.content}\n`;
     }
-    fullPrompt += "Brahima, réponds  et en utilisant le 'je' :\n";
+    fullPrompt += "Brahima, réponds et en utilisant le 'je' :\n";
     
     console.log("Prompt complet (premiers 500 caractères):", fullPrompt.substring(0, 500) + "...");
     console.log("Longueur totale du prompt:", fullPrompt.length, "caractères");
 
-    // Appel API Gemini
     console.log("\n🌐 Appel à l'API Gemini...");
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
     console.log("URL (sans clé):", apiUrl.replace(API_KEY, "***"));
     
     const requestBody = { contents: [{ parts: [{ text: fullPrompt }] }] };
-    console.log("Body de la requête:", JSON.stringify(requestBody, null, 2).substring(0, 500) + "...");
+    console.log("Body de la requête (tronqué):", JSON.stringify(requestBody, null, 2).substring(0, 300) + "...");
     
+    console.log("⏳ Envoi de la requête fetch...");
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),
     });
     
+    console.log("✅ Réponse reçue!");
     console.log("Statut de la réponse:", response.status, response.statusText);
-    console.log("Headers de la réponse:", JSON.stringify([...response.headers], null, 2));
     
     const data = await response.json();
     console.log("Réponse complète de l'API:", JSON.stringify(data, null, 2));
@@ -264,7 +261,7 @@ app.post("/generate", async (req, res) => {
       console.error("❌ Structure de réponse invalide");
       console.error("Données reçues:", JSON.stringify(data, null, 2));
       console.log("========================================\n");
-      return res.status(500).json({ error: "Réponse API invalide" });
+      return res.status(500).json({ error: "Réponse API invalide", details: data });
     }
 
     const aiResponse = data.candidates[0].content.parts[0].text;
@@ -283,8 +280,20 @@ app.post("/generate", async (req, res) => {
     console.error("Type d'erreur:", error.constructor.name);
     console.error("Message:", error.message);
     console.error("Stack trace:", error.stack);
+    
+    if (error.message.includes("fetch")) {
+      console.error("\n⚠️ PROBLÈME AVEC FETCH:");
+      console.error("- Vérifiez que node-fetch est installé");
+      console.error("- Version Node.js:", process.version);
+      console.error("- Essayez: npm install node-fetch@2");
+    }
+    
     console.log("========================================\n");
-    res.status(500).json({ error: "Erreur interne serveur" });
+    res.status(500).json({ 
+      error: "Erreur interne serveur",
+      message: error.message,
+      type: error.constructor.name
+    });
   }
 });
 
@@ -294,14 +303,11 @@ app.post("/reset-history", (req, res) => {
   console.log("🔄 POST /reset-history - RESET DEMANDÉ");
   console.log("========================================");
   console.log("Historique avant reset:", conversationHistory.length, "messages");
-  console.log("Données entretien avant reset:", JSON.stringify(interviewData, null, 2));
   
   conversationHistory = [];
   interviewData = { heure: null, lieu: null, mode: null, inProgress: false };
   
   console.log("✅ Historique réinitialisé");
-  console.log("Historique après reset:", conversationHistory.length, "messages");
-  console.log("Données entretien après reset:", JSON.stringify(interviewData, null, 2));
   console.log("========================================\n");
   
   res.json({ message: "Historique réinitialisé" });
@@ -313,6 +319,7 @@ app.listen(PORT, () => {
   console.log("🚀 SERVEUR DÉMARRÉ AVEC SUCCÈS");
   console.log("========================================");
   console.log("URL:", `http://localhost:${PORT}`);
+  console.log("Node version:", process.version);
   console.log("Environnement:", process.env.NODE_ENV || "development");
   console.log("Heure de démarrage:", new Date().toISOString());
   console.log("========================================\n");
