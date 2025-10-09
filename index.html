@@ -1385,10 +1385,10 @@
                     </button>
                 </div>
 
-                <div class="brai-loading" id="brai-loading">
+                <!-- <div class="brai-loading" id="brai-loading">
                     <div class="brai-spinner"></div>
                     <div class="brai-loading-text">BrAI analyse votre question...</div>
-                </div>
+                </div> -->
 
                 <div class="brai-result-section" id="brai-result-section">
                     <div class="brai-result-header">
@@ -1398,7 +1398,6 @@
                     <div class="brai-result-content">
                         <button class="brai-copy-btn" id="brai-copy-btn">
                             <i class="fas fa-copy"></i>
-
                         </button>
                         <div class="brai-result-text" id="brai-result"></div>
                     </div>
@@ -1535,7 +1534,7 @@
         console.log('Les donnes reucs' , data)
         
         // Retourne la réponse de l’API si dispo
-        document.getElementById('brai-prompt').textContent='Bonjour';
+        document.getElementById('brai-prompt').value="";
         return data || data.text || "✅ Réponse reçue avec succès !";
     } catch (error) {
         // En cas d’erreur (API inaccessible), fallback sur les réponses personnalisées
