@@ -210,7 +210,7 @@ app.post("/generate", async (req, res) => {
     }
 
     // Vérifier mode entretien
-    console.log("\n🔄 Vérification du mode entretien...");
+    console.log("\n🔄 Vérification  mode entretien...");
     const interviewReply = await handleInterviewFlow(userMessage);
     
     if (interviewReply) {
