@@ -1313,10 +1313,11 @@
                     </div>
                 </div>
                 
-                <a href="#" class="cta-button">
-                    <i class="fas fa-download"></i>
-                    Télécharger mon CV
-                </a>
+               <a href="#" id="downloadCV" class="cta-button">
+  <i class="fas fa-download"></i>
+  Télécharger mon CV
+</a>
+
             </div>
         </div>
     </section>
@@ -1624,6 +1625,18 @@
         setTimeout(() => {
             braiChatBtn.classList.remove('pulse');
         }, 10000);
+        
+        document.getElementById("downloadCV").addEventListener("click", function(event) {
+        event.preventDefault(); // empêche le lien par défaut
+        const cvUrl = "cv/CV_Diarrassouba_Brahima.pdf"; // 🧾 chemin vers ton CV
+        const link = document.createElement("a");
+        link.href = cvUrl;
+        link.download = "CV_Brahima_Diarrassouba.pdf"; // nom du fichier téléchargé
+        link.click();
+        });
+
+
     </script>
+
 </body>
 </html>
