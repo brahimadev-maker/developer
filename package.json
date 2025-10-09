@@ -19,10 +19,10 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "fetch": "^1.1.0",
     "node": "^24.10.0",
     "node-fetch": "^3.3.2"
-  },
-  "devDependencies": {}
+  }
 }
