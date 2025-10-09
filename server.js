@@ -3,7 +3,6 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-// Import correct pour node-fetch v2 (CommonJS)
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const app = express();
@@ -17,62 +16,72 @@ const APP_PASSWORD = process.env.APP_PASSWORD;
 const TO_MAIL = process.env.TO_MAIL;
 const PORT = process.env.PORT || 3002;
 
-console.log("========================================");
-console.log("🔧 CONFIGURATION DU SERVEUR");
-console.log("========================================");
-console.log("✅ Node version:", process.version);
-console.log("✅ API_KEY présente:", !!API_KEY);
-console.log("✅ AI_MAIL:", AI_MAIL || "NON DÉFINI");
-console.log("✅ APP_PASSWORD présent:", !!APP_PASSWORD);
-console.log("✅ TO_MAIL:", TO_MAIL || "NON DÉFINI");
-console.log("✅ PORT:", PORT);
-console.log("========================================\n");
-
-// ==== TRANSPORTEUR NODEMAILER (GMAIL) ====
+// ==== TRANSPORTEUR NODEMAILER ====
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: { user: AI_MAIL, pass: APP_PASSWORD },
 });
 
-console.log("📧 Transporteur Nodemailer créé");
-
 // ==== CONTEXTE FIXE ====
-const context = `
-IMPORTANT : À partir de maintenant, tu es Brahima Diarrassouba.
-Réponds toujours à la première personne ("je").
-Ne dis jamais que tu es une IA. Utilise uniquement ce contexte :
+const context = `Tu es Brahima Diarrassouba. Réponds TOUJOURS à la première personne ("je", "mon", "mes").
+Ne mentionne JAMAIS que tu es une IA, un assistant virtuel ou un bot.
 
-Je m'appelle Brahima Diarrassouba, développeur Web/Mobile et étudiant en cycle ingénieur à l'ESATIC.
-Je recherche un stage pour développer mes compétences.
-Numéro : +2250787288739
-Compétences : HTML, CSS, JS, React.js, React Native, Node.js, Django, PHP, API REST, SQL, Firebase, MongoDB, Python, Machine Learning.
-Atouts : volonté d'apprendre, esprit d'équipe.
-Formations : Licence 3 ESATIC, Bac D.
-Expériences : hackathons, projets IA, plateformes web/mobile.
+INFORMATIONS PERSONNELLES :
+- Nom : Brahima Diarrassouba
+- Formation actuelle : Master 1 en Cybersécurité et Intelligence Artificielle à l'ESATIC (Côte d'Ivoire)
+- Diplôme obtenu : Licence en Systèmes Réseaux Informatique et Télécommunications (ESATIC)
+- Baccalauréat : Série D (Sciences Expérimentales)
+- Statut : Étudiant disponible pour un stage (pas pour un emploi à temps plein, car encore en formation)
+- Contact : +225 07 87 28 87 39
+- Email : brahimadiarrassouba@gmail.com
+
+COMPÉTENCES TECHNIQUES :
+Frontend : HTML5, CSS3, JavaScript (ES6+), React.js, React Native, Tailwind CSS
+Backend : Node.js, Express.js, Django, PHP, API REST
+Bases de données : MongoDB, Firebase, MySQL, PostgreSQL
+IA/ML : Python, TensorFlow, Scikit-learn, Traitement du langage naturel
+DevOps : Git, Docker, Linux
+Outils : Postman, VS Code, Figma
+
+EXPÉRIENCES ET PROJETS :
+- Participation à plusieurs hackathons (développement d'applications innovantes)
+- Projets d'intelligence artificielle (chatbots, systèmes de recommandation)
+- Développement de plateformes web et mobiles complètes
+- Projets académiques en cybersécurité (analyse de vulnérabilités, sécurisation de réseaux)
+
+QUALITÉS PERSONNELLES :
+- Grande capacité d'apprentissage et adaptation rapide
+- Esprit d'équipe et excellente communication
+- Passionné par les nouvelles technologies
+- Autonome et rigoureux dans le travail
+- Curieux et toujours en quête de nouveaux défis
+
+OBJECTIFS :
+Je recherche activement un stage pour approfondir mes compétences pratiques, contribuer à des projets concrets et enrichir mon expérience professionnelle. Je suis particulièrement intéressé par les domaines de la cybersécurité, l'intelligence artificielle, et le développement d'applications innovantes.
+
+INSTRUCTIONS DE RÉPONSE :
+- Sois naturel, professionnel et enthousiaste
+- Adapte ton niveau de détail selon la question
+- Si on te demande ton CV, propose de l'envoyer par email
+- Si on parle d'emploi à temps plein, précise que tu es encore en formation mais ouvert à un stage
+- Reste humble mais confiant sur tes compétences
 `;
-
-console.log("📝 Contexte IA chargé:", context.substring(0, 100) + "...\n");
 
 // ==== HISTORIQUE ====
 let conversationHistory = [];
-let interviewData = { heure: null, lieu: null, mode: null, inProgress: false };
-
-console.log("💾 Historique de conversation initialisé");
-console.log("📅 Données d'entretien initialisées\n");
+let interviewData = { 
+  date: null, 
+  heure: null, 
+  lieu: null, 
+  mode: null, 
+  inProgress: false,
+  step: 'detection'
+};
 
 // ==== UTILS MAIL ====
 async function sendMail(subject, text, html) {
-  console.log("\n========================================");
-  console.log("📧 TENTATIVE D'ENVOI D'EMAIL");
-  console.log("========================================");
-  console.log("De:", AI_MAIL);
-  console.log("À:", TO_MAIL);
-  console.log("Sujet:", subject);
-  console.log("Texte:", text);
-  console.log("----------------------------------------");
-  
   try {
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: `"Brahima Diarrassouba" <${AI_MAIL}>`,
       replyTo: AI_MAIL,
       to: TO_MAIL,
@@ -81,246 +90,287 @@ async function sendMail(subject, text, html) {
       html,
       headers: { "X-Priority": "1", Importance: "High" },
     });
-    
-    console.log("✅ Email envoyé avec succès!");
-    console.log("ID du message:", info.messageId);
-    console.log("Réponse:", info.response);
-    console.log("========================================\n");
   } catch (err) {
-    console.error("❌ ERREUR LORS DE L'ENVOI D'EMAIL");
-    console.error("Message d'erreur:", err.message);
-    console.error("Stack trace:", err.stack);
-    console.log("========================================\n");
+    console.error("Erreur mail:", err.message);
   }
 }
 
 function buildInterviewMail(data) {
-  console.log("\n📝 Construction du mail d'entretien");
-  console.log("Données:", JSON.stringify(data, null, 2));
-  
-  const text = `Proposition d'entretien :
-Heure : ${data.heure}
-Lieu : ${data.lieu}
-Mode : ${data.mode}`;
+  const text = `🎯 NOUVELLE PROPOSITION D'ENTRETIEN
+
+📅 Date : ${data.date || "Non précisée"}
+⏰ Heure : ${data.heure || "Non précisée"}
+📍 Lieu : ${data.lieu || "Non précisé"}
+💻 Mode : ${data.mode || "Non précisé"}
+
+---
+Message automatique du chatbot IA de Brahima Diarrassouba`;
 
   const html = `
-    <h2>📅 Nouvelle proposition d'entretien</h2>
-    <p><strong>Heure :</strong> ${data.heure}</p>
-    <p><strong>Lieu :</strong> ${data.lieu}</p>
-    <p><strong>Mode :</strong> ${data.mode}</p>
-    <hr>
-    <p>Ce message a été généré automatiquement par l'assistant IA.</p>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 2px solid #4CAF50; border-radius: 10px;">
+      <h2 style="color: #4CAF50; text-align: center;">🎯 Nouvelle Proposition d'Entretien</h2>
+      <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+        <p><strong>📅 Date :</strong> ${data.date || "Non précisée"}</p>
+        <p><strong>⏰ Heure :</strong> ${data.heure || "Non précisée"}</p>
+        <p><strong>📍 Lieu :</strong> ${data.lieu || "Non précisé"}</p>
+        <p><strong>💻 Mode :</strong> ${data.mode || "Non précisé"}</p>
+      </div>
+      <hr style="border: 1px solid #ddd;">
+      <p style="color: #666; font-size: 12px; text-align: center;">Message automatique généré par le chatbot IA de Brahima Diarrassouba</p>
+    </div>
   `;
 
-  console.log("✅ Mail construit avec succès\n");
   return { text, html };
 }
 
-// ==== DÉTECTION ENTRETIEN ====
-function isInterviewProposal(message) {
-  console.log("\n🔍 Détection de proposition d'entretien");
-  console.log("Message à analyser:", message);
+// ==== DÉTECTION ENTRETIEN INTELLIGENTE ====
+function detectInterviewIntent(message) {
+  const lowerMsg = message.toLowerCase();
   
-  const keywords = ["entretien", "rendez-vous", "rencontre", "interview", "rdv"];
-  const detected = keywords.some((kw) => message.toLowerCase().includes(kw));
+  // Mots-clés directs
+  const directKeywords = [
+    'entretien', 'interview', 'rendez-vous', 'rdv', 'rencontre',
+    'meeting', 'réunion', 'discussion', 'voir ensemble', 'discuter'
+  ];
   
-  console.log("Mots-clés recherchés:", keywords);
-  console.log("Entretien détecté:", detected);
-  console.log("----------------------------------------\n");
+  // Expressions contextuelles
+  const contextualPhrases = [
+    'quand es-tu disponible', 'quand peux-tu', 'disponible pour',
+    'on peut se voir', 'on peut échanger', 'passez nous voir',
+    'venir à', 'fixer un', 'planifier', 'organiser un', 'proposer un'
+  ];
   
-  return detected;
+  // Vérification
+  const hasDirect = directKeywords.some(kw => lowerMsg.includes(kw));
+  const hasContextual = contextualPhrases.some(phrase => lowerMsg.includes(phrase));
+  
+  return hasDirect || hasContextual;
 }
 
-// ==== GESTION ENTRETIEN ====
-async function handleInterviewFlow(userMessage) {
-  console.log("\n========================================");
-  console.log("🎯 GESTION DU FLUX D'ENTRETIEN");
-  console.log("========================================");
-  console.log("Message utilisateur:", userMessage);
-  console.log("État actuel de interviewData:", JSON.stringify(interviewData, null, 2));
+// ==== EXTRACTION INTELLIGENTE DES INFORMATIONS ====
+function extractDateTime(message) {
+  const lowerMsg = message.toLowerCase();
+  let extracted = { date: null, heure: null };
   
-  if (isInterviewProposal(userMessage) && !interviewData.inProgress) {
-    console.log("➡️ Démarrage du processus d'entretien");
-    interviewData.inProgress = true;
-    console.log("État mis à jour:", JSON.stringify(interviewData, null, 2));
-    console.log("========================================\n");
-    return "D'accord, pouvez-vous m'indiquer l'heure prévue pour l'entretien ?";
+  // Dates relatives
+  const datePatterns = {
+    'aujourd\'hui': 'Aujourd\'hui',
+    'demain': 'Demain',
+    'après-demain': 'Après-demain',
+    'lundi': 'Lundi prochain',
+    'mardi': 'Mardi prochain',
+    'mercredi': 'Mercredi prochain',
+    'jeudi': 'Jeudi prochain',
+    'vendredi': 'Vendredi prochain',
+    'samedi': 'Samedi prochain',
+    'dimanche': 'Dimanche prochain'
+  };
+  
+  // Extraction de date
+  for (let [pattern, value] of Object.entries(datePatterns)) {
+    if (lowerMsg.includes(pattern)) {
+      extracted.date = value;
+      break;
+    }
   }
-
-  if (interviewData.inProgress && !interviewData.heure) {
-    console.log("➡️ Enregistrement de l'heure");
-    interviewData.heure = userMessage;
-    console.log("État mis à jour:", JSON.stringify(interviewData, null, 2));
-    console.log("========================================\n");
-    return "Très bien, pouvez-vous préciser le lieu de l'entretien ?";
+  
+  // Format de date (dd/mm, dd-mm, dd/mm/yyyy)
+  const dateRegex = /(\d{1,2})[\/\-](\d{1,2})([\/\-]\d{2,4})?/;
+  const dateMatch = message.match(dateRegex);
+  if (dateMatch) {
+    extracted.date = dateMatch[0];
   }
-
-  if (interviewData.inProgress && !interviewData.lieu) {
-    console.log("➡️ Enregistrement du lieu");
-    interviewData.lieu = userMessage;
-    console.log("État mis à jour:", JSON.stringify(interviewData, null, 2));
-    console.log("========================================\n");
-    return "Parfait. L'entretien sera-t-il en ligne ou en physique ?";
+  
+  // Extraction d'heure (14h, 14h30, 14:30, 2pm)
+  const timeRegex = /(\d{1,2})[h:](\d{2})?|(\d{1,2})\s*(am|pm|h)/i;
+  const timeMatch = message.match(timeRegex);
+  if (timeMatch) {
+    extracted.heure = timeMatch[0];
   }
+  
+  return extracted;
+}
 
-  if (interviewData.inProgress && !interviewData.mode) {
-    console.log("➡️ Enregistrement du mode");
-    interviewData.mode = userMessage;
-    console.log("État complet:", JSON.stringify(interviewData, null, 2));
-
-    console.log("✉️ Toutes les informations collectées, envoi du mail...");
-    const { text, html } = buildInterviewMail(interviewData);
-    await sendMail("📅 Proposition d'entretien", text, html);
-
-    console.log("🔄 Réinitialisation des données d'entretien");
-    interviewData = { heure: null, lieu: null, mode: null, inProgress: false };
-    console.log("État après reset:", JSON.stringify(interviewData, null, 2));
-    console.log("========================================\n");
-    return "Merci pour ces précisions. J'ai bien noté les informations.";
+function extractLocation(message) {
+  const lowerMsg = message.toLowerCase();
+  
+  // Modes en ligne
+  const onlineModes = ['en ligne', 'visio', 'zoom', 'google meet', 'teams', 'skype', 'virtuel', 'distance', 'remote'];
+  if (onlineModes.some(mode => lowerMsg.includes(mode))) {
+    return { lieu: 'En ligne (visioconférence)', mode: 'En ligne' };
   }
-
-  console.log("⏭️ Pas de gestion d'entretien en cours, passage à l'IA");
-  console.log("========================================\n");
+  
+  // Modes physiques avec lieux communs
+  const physicalKeywords = ['bureau', 'locaux', 'entreprise', 'siège', 'adresse', 'physique', 'présentiel', 'sur place'];
+  if (physicalKeywords.some(kw => lowerMsg.includes(kw))) {
+    return { lieu: message, mode: 'Physique' };
+  }
+  
+  // Si contient une adresse (numéro + rue, ou quartier connu)
+  if (/\d+/.test(message) || lowerMsg.includes('plateau') || lowerMsg.includes('cocody') || lowerMsg.includes('abidjan')) {
+    return { lieu: message, mode: 'Physique' };
+  }
+  
   return null;
 }
 
+// ==== GESTION ENTRETIEN AMÉLIORÉE ====
+async function handleInterviewFlow(userMessage) {
+  // Détection initiale
+  if (detectInterviewIntent(userMessage) && !interviewData.inProgress) {
+    interviewData.inProgress = true;
+    interviewData.step = 'datetime';
+    
+    // Tentative d'extraction immédiate
+    const extracted = extractDateTime(userMessage);
+    if (extracted.date) interviewData.date = extracted.date;
+    if (extracted.heure) interviewData.heure = extracted.heure;
+    
+    // Si on a déjà les infos
+    if (interviewData.date && interviewData.heure) {
+      interviewData.step = 'location';
+      return "Parfait ! Pour confirmer, où souhaiteriez-vous que l'entretien ait lieu ? (En ligne, à votre bureau, ou une adresse précise)";
+    }
+    
+    return "Avec plaisir ! Je suis disponible pour un entretien. Quel jour et à quelle heure vous conviendrait le mieux ?";
+  }
+
+  if (!interviewData.inProgress) return null;
+
+  // Étape DateTime
+  if (interviewData.step === 'datetime') {
+    const extracted = extractDateTime(userMessage);
+    
+    if (extracted.date) interviewData.date = extracted.date;
+    if (extracted.heure) interviewData.heure = extracted.heure;
+    
+    if (interviewData.date && interviewData.heure) {
+      interviewData.step = 'location';
+      return "Très bien noté ! L'entretien aura lieu en ligne (visioconférence) ou en physique ?";
+    } else if (interviewData.date && !interviewData.heure) {
+      return "Parfait pour la date. À quelle heure préférez-vous ?";
+    } else if (!interviewData.date && interviewData.heure) {
+      return "L'heure est notée. Quel jour vous arrange ?";
+    } else {
+      return "Pourriez-vous préciser la date et l'heure de l'entretien ? Par exemple : 'demain à 14h' ou '15/10 à 10h30'";
+    }
+  }
+
+  // Étape Location
+  if (interviewData.step === 'location') {
+    const locationInfo = extractLocation(userMessage);
+    
+    if (locationInfo) {
+      interviewData.lieu = locationInfo.lieu;
+      interviewData.mode = locationInfo.mode;
+    } else {
+      // Fallback manuel
+      interviewData.lieu = userMessage;
+      interviewData.mode = userMessage.toLowerCase().includes('ligne') || userMessage.toLowerCase().includes('visio') ? 'En ligne' : 'Physique';
+    }
+    
+    // Envoi du mail
+    const { text, html } = buildInterviewMail(interviewData);
+    await sendMail("🎯 Proposition d'entretien - Brahima Diarrassouba", text, html);
+    
+    // Reset
+    const summary = `Parfait ! J'ai bien noté tous les détails de notre entretien :
+📅 ${interviewData.date || 'Date à confirmer'} à ${interviewData.heure || 'heure à confirmer'}
+📍 ${interviewData.lieu}
+
+Je serai ravi de vous rencontrer. À bientôt !`;
+    
+    interviewData = { date: null, heure: null, lieu: null, mode: null, inProgress: false, step: 'detection' };
+    
+    return summary;
+  }
+
+  return null;
+}
+
+// ==== ROUTES ====
 app.get("/", (req, res) => {
-  console.log("\n🌐 GET / - Route racine appelée");
-  console.log("IP client:", req.ip);
-  console.log("User-Agent:", req.get("User-Agent"));
-  res.send("Hello word");
+  res.json({ 
+    status: "OK", 
+    message: "API Chatbot Brahima Diarrassouba",
+    version: "2.0"
+  });
 });
 
-// ==== ROUTE IA ====
 app.post("/generate", async (req, res) => {
-  console.log("\n========================================");
-  console.log("🤖 POST /generate - NOUVELLE REQUÊTE IA");
-  console.log("========================================");
-  console.log("Heure:", new Date().toISOString());
-  console.log("IP client:", req.ip);
-  console.log("Body reçu:", JSON.stringify(req.body, null, 2));
-  
   try {
     const userMessage = req.body.text?.trim();
-    console.log("Message utilisateur (après trim):", userMessage);
-    
-    if (!userMessage) {
-      console.warn("⚠️ Message vide reçu");
-      console.log("========================================\n");
-      return res.status(400).json({ error: "Message vide" });
-    }
+    if (!userMessage) return res.status(400).json({ error: "Message vide" });
 
-    console.log("\n🔄 Vérification du mode entretien...");
+    // Vérifier mode entretien
     const interviewReply = await handleInterviewFlow(userMessage);
-    
     if (interviewReply) {
-      console.log("✅ Réponse d'entretien générée:", interviewReply);
       conversationHistory.push({ role: "assistant", content: interviewReply });
-      console.log("📚 Historique mis à jour, longueur:", conversationHistory.length);
-      console.log("========================================\n");
       return res.json(interviewReply);
     }
 
-    console.log("\n📝 Ajout du message utilisateur à l'historique");
+    // Ajouter message user
     conversationHistory.push({ role: "user", content: userMessage });
-    console.log("📚 Taille de l'historique:", conversationHistory.length);
 
-    console.log("\n🔨 Construction du prompt complet...");
-    let fullPrompt = context + "\n\n";
-    for (let msg of conversationHistory) {
-      fullPrompt += msg.role === "user"
-        ? `Utilisateur : ${msg.content}\n`
+    // Construire prompt
+    let fullPrompt = context + "\n\nHISTORIQUE DE LA CONVERSATION :\n";
+    conversationHistory.slice(-10).forEach(msg => {
+      fullPrompt += msg.role === "user" 
+        ? `Recruteur : ${msg.content}\n`
         : `Brahima : ${msg.content}\n`;
-    }
-    fullPrompt += "Brahima, réponds et en utilisant le 'je' :\n";
-    
-    console.log("Prompt complet (premiers 500 caractères):", fullPrompt.substring(0, 500) + "...");
-    console.log("Longueur totale du prompt:", fullPrompt.length, "caractères");
-
-    console.log("\n🌐 Appel à l'API Gemini...");
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
-    console.log("URL (sans clé):", apiUrl.replace(API_KEY, "***"));
-    
-    const requestBody = { contents: [{ parts: [{ text: fullPrompt }] }] };
-    console.log("Body de la requête (tronqué):", JSON.stringify(requestBody, null, 2).substring(0, 300) + "...");
-    
-    console.log("⏳ Envoi de la requête fetch...");
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
     });
-    
-    console.log("✅ Réponse reçue!");
-    console.log("Statut de la réponse:", response.status, response.statusText);
-    
+    fullPrompt += "\nBrahima, réponds naturellement à la première personne :\n";
+
+    // Appel API Gemini
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          contents: [{ parts: [{ text: fullPrompt }] }],
+          generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1024,
+          }
+        }),
+      }
+    );
+
     const data = await response.json();
-    console.log("Réponse complète de l'API:", JSON.stringify(data, null, 2));
 
     if (!data.candidates?.[0]?.content?.parts) {
-      console.error("❌ Structure de réponse invalide");
-      console.error("Données reçues:", JSON.stringify(data, null, 2));
-      console.log("========================================\n");
       return res.status(500).json({ error: "Réponse API invalide", details: data });
     }
 
     const aiResponse = data.candidates[0].content.parts[0].text;
-    console.log("\n✅ Réponse IA extraite:", aiResponse);
-    
-    console.log("\n📝 Ajout de la réponse à l'historique");
     conversationHistory.push({ role: "assistant", content: aiResponse });
-    console.log("📚 Nouvelle taille de l'historique:", conversationHistory.length);
 
-    console.log("\n✅ Envoi de la réponse au client");
-    console.log("========================================\n");
+    // Garder seulement les 20 derniers messages
+    if (conversationHistory.length > 20) {
+      conversationHistory = conversationHistory.slice(-20);
+    }
+
     res.json(aiResponse);
     
   } catch (error) {
-    console.error("\n❌ ERREUR DANS /generate");
-    console.error("Type d'erreur:", error.constructor.name);
-    console.error("Message:", error.message);
-    console.error("Stack trace:", error.stack);
-    
-    if (error.message.includes("fetch")) {
-      console.error("\n⚠️ PROBLÈME AVEC FETCH:");
-      console.error("- Vérifiez que node-fetch est installé");
-      console.error("- Version Node.js:", process.version);
-      console.error("- Essayez: npm install node-fetch@2");
-    }
-    
-    console.log("========================================\n");
+    console.error("Erreur /generate:", error.message);
     res.status(500).json({ 
-      error: "Erreur interne serveur",
-      message: error.message,
-      type: error.constructor.name
+      error: "Erreur serveur",
+      message: error.message
     });
   }
 });
 
-// ==== RESET HISTORIQUE ====
 app.post("/reset-history", (req, res) => {
-  console.log("\n========================================");
-  console.log("🔄 POST /reset-history - RESET DEMANDÉ");
-  console.log("========================================");
-  console.log("Historique avant reset:", conversationHistory.length, "messages");
-  
   conversationHistory = [];
-  interviewData = { heure: null, lieu: null, mode: null, inProgress: false };
-  
-  console.log("✅ Historique réinitialisé");
-  console.log("========================================\n");
-  
+  interviewData = { date: null, heure: null, lieu: null, mode: null, inProgress: false, step: 'detection' };
   res.json({ message: "Historique réinitialisé" });
 });
 
-// ==== LANCEMENT SERVEUR ====
+// ==== LANCEMENT ====
 app.listen(PORT, () => {
-  console.log("\n========================================");
-  console.log("🚀 SERVEUR DÉMARRÉ AVEC SUCCÈS");
-  console.log("========================================");
-  console.log("URL:", `http://localhost:${PORT}`);
-  console.log("Node version:", process.version);
-  console.log("Environnement:", process.env.NODE_ENV || "development");
-  console.log("Heure de démarrage:", new Date().toISOString());
-  console.log("========================================\n");
+  console.log(`✅ Serveur démarré sur le port ${PORT}`);
 });
