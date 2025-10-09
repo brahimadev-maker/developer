@@ -90,8 +90,10 @@ async function sendMail(subject, text, html) {
       html,
       headers: { "X-Priority": "1", Importance: "High" },
     });
+    console.log("✅ Email envoyé avec succès");
   } catch (err) {
-    console.error("Erreur mail:", err.message);
+    console.error("❌ Erreur envoi mail:", err.message);
+    throw err; // Propager l'erreur pour la gérer dans handleInterviewFlow
   }
 }
 
@@ -269,21 +271,37 @@ async function handleInterviewFlow(userMessage) {
       interviewData.mode = userMessage.toLowerCase().includes('ligne') || userMessage.toLowerCase().includes('visio') ? 'En ligne' : 'Physique';
     }
     
-    // Envoi du mail
-    const { text, html } = buildInterviewMail(interviewData);
- 
-    await sendMail("🎯 Proposition d'entretien - Brahima Diarrassouba", text, html);
-    
-    // Reset
-    const summary = `Parfait ! J'ai bien noté tous les détails de notre entretien :
+    // Envoi du mail avec gestion d'erreur
+    console.log('📧 Préparation de l\'envoi du mail...');
+    try {
+      const { text, html } = buildInterviewMail(interviewData);
+      await sendMail("🎯 Proposition d'entretien - Brahima Diarrassouba", text, html);
+      
+      // Reset et message de confirmation
+      const summary = `Parfait ! J'ai bien noté tous les détails de notre entretien :
+📅 ${interviewData.date || 'Date à confirmer'} à ${interviewData.heure || 'heure à confirmer'}
+📍 ${interviewData.lieu}
+
+Une notification a été envoyée. Je serai ravi de vous rencontrer. À bientôt !`;
+      
+      interviewData = { date: null, heure: null, lieu: null, mode: null, inProgress: false, step: 'detection' };
+      
+      return summary;
+      
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'envoi du mail:', error);
+      
+      // Message d'erreur mais on continue
+      const summary = `J'ai bien noté tous les détails de notre entretien :
 📅 ${interviewData.date || 'Date à confirmer'} à ${interviewData.heure || 'heure à confirmer'}
 📍 ${interviewData.lieu}
 
 Je serai ravi de vous rencontrer. À bientôt !`;
-    
-    interviewData = { date: null, heure: null, lieu: null, mode: null, inProgress: false, step: 'detection' };
-    
-    return summary;
+      
+      interviewData = { date: null, heure: null, lieu: null, mode: null, inProgress: false, step: 'detection' };
+      
+      return summary;
+    }
   }
 
   return null;
