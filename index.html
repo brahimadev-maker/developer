@@ -1525,11 +1525,12 @@
     
     try {
         // Appel à ton API locale
-        const response = await fetch("https://developer-lsu0.onrender.com/generate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: prompt })
-        });
+  const response = await fetch(`${process.env.API_URL}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: prompt })
+});
+
         const data = await response.json();
         console.log('Les donnes reucs' , data)
         
@@ -1539,20 +1540,7 @@
     } catch (error) {
         // En cas d’erreur (API inaccessible), fallback sur les réponses personnalisées
         const lowerPrompt = prompt.toLowerCase();
-        
-        if (lowerPrompt.includes('cybersécurité') || lowerPrompt.includes('sécurité') || lowerPrompt.includes('soc')) {
-            return "Je suis actuellement en formation M1 CSIA à l'ESATIC où j'apprends les fondamentaux de la cybersécurité. Mon objectif est de devenir analyste SOC. Je développe mes compétences à travers des projets pratiques comme mon SOC Analytics Dashboard et ma veille technologique constante sur les menaces actuelles.";
-        } else if (lowerPrompt.includes('ia') || lowerPrompt.includes('intelligence artificielle') || lowerPrompt.includes('machine learning')) {
-            return "L'IA est ma passion ! Je maîtrise le Machine Learning, Deep Learning, et Computer Vision avec Python, TensorFlow et PyTorch. En tant que Président du Club ML, je forme d'autres étudiants et développe des projets comme SIADE (système de reconnaissance faciale). J'explore constamment comment l'IA peut révolutionner la cybersécurité.";
-        } else if (lowerPrompt.includes('projet') || lowerPrompt.includes('siade') || lowerPrompt.includes('orange') || lowerPrompt.includes('stage')) {
-            return "Mes projets reflètent ma progression : SIADE (reconnaissance faciale avec ESP32), mon stage chez Orange Digital Center en réalité mixte, la plateforme e-School (2ème place au DevFest), et mon SOC Analytics Dashboard. Chaque projet m'apprend quelque chose de nouveau et me rapproche de mon objectif professionnel.";
-        } else if (lowerPrompt.includes('formation') || lowerPrompt.includes('parcours') || lowerPrompt.includes('études')) {
-            return "Mon parcours : Licence SRIT (2022-2024) puis Master 1 CSIA depuis septembre 2024 à l'ESATIC. J'ai fait mon stage chez Orange Digital Center, je préside le Club ML, et j'ai été formateur React Native. Chaque étape enrichit ma vision de la tech et de la cybersécurité.";
-        } else if (lowerPrompt.includes('compétence') || lowerPrompt.includes('technologie') || lowerPrompt.includes('développement')) {
-            return "Mes compétences couvrent le développement (Python, JavaScript, React, Node.js), l'IA (ML, Deep Learning, CV), et les bases de la cybersécurité que j'approfondis actuellement. Je maîtrise aussi les bases de données et j'ai de solides soft skills en leadership et analyse critique.";
-        } else {
-            return "C'est une excellente question ! En tant qu'étudiant en CSIA et passionné de technologie, je suis toujours ravi de discuter de mes projets, ma formation, ou de sujets tech en général. N'hésitez pas à être plus spécifique sur ce qui vous intéresse !";
-        }
+        return "Un erreur s'est produite !"
     }
 }
 
