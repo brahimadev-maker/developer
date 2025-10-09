@@ -1525,7 +1525,7 @@
     
     try {
         // Appel à ton API locale
-  const response = await fetch(`${process.env.API_URL}`, {
+  const response = await fetch(`${window.env.API_URL}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text: prompt })
