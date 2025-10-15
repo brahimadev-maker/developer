@@ -23,6 +23,167 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ============================================
+   SECTION AWARDS - CSS SÉPARÉ AVEC IMAGES
+   ============================================ */
+
+/* Grille des prix */
+.awards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+}
+
+/* Carte de prix */
+.award-card {
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px var(--shadow);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border);
+    position: relative;
+}
+
+/* Effet hover sur la carte */
+.award-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px var(--shadow);
+}
+
+.award-card:hover .award-image {
+    transform: scale(1.1);
+}
+
+.award-card:hover .award-overlay {
+    opacity: 1;
+}
+
+/* Conteneur de l'image */
+.award-image-container {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+/* Image du prix */
+.award-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+/* Overlay avec icône */
+.award-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(20, 184, 166, 0.9));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.award-overlay i {
+    font-size: 3.5rem;
+    color: var(--white);
+    animation: bounceIn 0.6s ease;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Contenu de la carte */
+.award-content {
+    padding: 30px;
+}
+
+.award-content h3 {
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* Titre du prix */
+.award-title {
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* Nom de l'organisme */
+.award-organizer {
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+/* Description du prix */
+.award-description {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+/* Date du prix */
+.award-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Icône de la date */
+.award-date i {
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Grille en une colonne sur mobile */
+    .awards-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    /* Image plus petite sur mobile */
+    .award-image-container {
+        height: 180px;
+    }
+
+    /* Réduction du padding sur mobile */
+    .award-content {
+        padding: 20px;
+    }
+
+    /* Titre légèrement plus petit */
+    .award-title {
+        font-size: 1.2rem;
+    }
+
+    /* Icône overlay plus petite */
+    .award-overlay i {
+        font-size: 2.5rem;
+    }
+}
         * {
             margin: 0;
             padding: 0;
@@ -1233,6 +1394,9 @@
         </div>
     </section>
 
+
+
+
     <!-- Experience Section -->
     <section id="experience" class="section">
         <div class="container">
@@ -1286,6 +1450,49 @@
         </div>
     </section>
 
+    <!-- Awards Section -->
+    <section id="awards" class="section">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">Prix & Distinctions</h2>
+            <div class="awards-grid">
+                <div class="award-card animate-on-scroll">
+                    <div class="award-image-container">
+                        <img src="awards/gameJam.jpeg" alt="HACKATHON DevFest 2024" class="award-image">
+                        <div class="award-overlay">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                    <div class="award-content">
+                        <h3 class="award-title">1er Prix Game For Change</h3>
+                        <p class="award-organizer">Paradise Game Côte D'ivoire</p>
+                        <p class="award-description">Reconnaissance pour le développement d'un jeu pour dejouer la faim.</p>
+                        <div class="award-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>2024</span>
+                        </div>
+                    </div>
+                </div>
+                      <div class="award-card animate-on-scroll">
+                    <div class="award-image-container">
+                        <img src="awards/devfest.jpeg" alt="HACKATHON DevFest 2024" class="award-image">
+                        <div class="award-overlay">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                    <div class="award-content">
+                        <h3 class="award-title">2ème Place - HACKATHON DevFest 2024</h3>
+                        <p class="award-organizer">GDG Abidjan</p>
+                        <p class="award-description">Reconnaissance pour le développement de la plateforme e-School, une classe connectée innovante révolutionnant l'apprentissage numérique.</p>
+                        <div class="award-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>2024</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
     <!-- Contact Section -->
     <section id="contact" class="section">
         <div class="container">
