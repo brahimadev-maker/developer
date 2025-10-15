@@ -23,8 +23,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ============================================
-   SECTION AWARDS - CSS SÉPARÉ AVEC IMAGES
+/* ============================================
+   SECTION AWARDS - CSS COMPLET AVEC BOUTON "VOIR PLUS"
    ============================================ */
 
 /* Grille des prix */
@@ -138,6 +138,16 @@
     margin-bottom: 20px;
 }
 
+/* Footer avec date et lien */
+.award-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
 /* Date du prix */
 .award-date {
     display: flex;
@@ -151,6 +161,51 @@
 /* Icône de la date */
 .award-date i {
     font-size: 0.85rem;
+}
+
+/* ============================================
+   BOUTON "VOIR PLUS"
+   ============================================ */
+
+/* Style du lien "Voir plus" */
+.award-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: var(--gray-light);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+/* Effet hover sur le bouton */
+.award-link:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateX(5px);
+    border-color: var(--primary);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+/* Icône flèche dans le bouton */
+.award-link i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+/* Animation de la flèche au hover */
+.award-link:hover i {
+    transform: translateX(3px);
+}
+
+/* Effet actif (au clic) */
+.award-link:active {
+    transform: translateX(5px) scale(0.98);
 }
 
 /* ============================================
@@ -182,6 +237,24 @@
     /* Icône overlay plus petite */
     .award-overlay i {
         font-size: 2.5rem;
+    }
+
+    /* Footer en colonne sur mobile */
+    .award-footer {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    /* Lien pleine largeur sur mobile */
+    .award-link {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Pas de translation sur mobile au hover */
+    .award-link:hover {
+        transform: translateX(0);
     }
 }
         * {
@@ -1453,13 +1526,15 @@
     </section>
 
     <!-- Awards Section -->
+  
+    <!-- Awards Section -->
     <section id="awards" class="section">
         <div class="container">
             <h2 class="section-title animate-on-scroll">Prix & Distinctions</h2>
             <div class="awards-grid">
                 <div class="award-card animate-on-scroll">
                     <div class="award-image-container">
-                        <img src="awards/gameJam.jpeg" alt="HACKATHON DevFest 2024" class="award-image">
+                        <img src="awards/gameJam.jpeg" alt="Game For Change 2024" class="award-image">
                         <div class="award-overlay">
                             <i class="fas fa-trophy"></i>
                         </div>
@@ -1467,14 +1542,21 @@
                     <div class="award-content">
                         <h3 class="award-title">1er Prix Game For Change</h3>
                         <p class="award-organizer">Paradise Game Côte D'ivoire</p>
-                        <p class="award-description">Reconnaissance pour le développement d'un jeu pour dejouer la faim.</p>
-                        <div class="award-date">
-                            <i class="fas fa-calendar"></i>
-                            <span>2024</span>
+                        <p class="award-description">Reconnaissance pour le développement d'un jeu pour déjouer la faim.</p>
+                        <div class="award-footer">
+                            <div class="award-date">
+                                <i class="fas fa-calendar"></i>
+                                <span>2025</span>
+                            </div>
+                            <a href="https://www.linkedin.com/posts/brahima-diarrassouba-433bb7289_paradisegame-gameforchange-hackathon-activity-7317098072012967937-ZE1B?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEYfgKcBtkz3CG2w0dE-NkH13ZshBQsX1Nk" target="_blank" class="award-link">
+                                <span>Voir plus</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
-                      <div class="award-card animate-on-scroll">
+
+                <div class="award-card animate-on-scroll">
                     <div class="award-image-container">
                         <img src="awards/devfest.jpeg" alt="HACKATHON DevFest 2024" class="award-image">
                         <div class="award-overlay">
@@ -1485,16 +1567,24 @@
                         <h3 class="award-title">2ème Place - HACKATHON DevFest 2024</h3>
                         <p class="award-organizer">GDG Abidjan</p>
                         <p class="award-description">Reconnaissance pour le développement de la plateforme e-School, une classe connectée innovante révolutionnant l'apprentissage numérique.</p>
-                        <div class="award-date">
-                            <i class="fas fa-calendar"></i>
-                            <span>2024</span>
+                        <div class="award-footer">
+                            <div class="award-date">
+                                <i class="fas fa-calendar"></i>
+                                <span>2024</span>
+                            </div>
+                            <a href="https://www.linkedin.com/posts/teya-a-952280206_hackathon-devfest24-devfestabrcloudabrabidjan-activity-7266438147809460224-5yha?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEYfgKcBtkz3CG2w0dE-NkH13ZshBQsX1Nk" target="_blank" class="award-link">
+                                <span>Voir plus</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
 
+
             </div>
         </div>
     </section>
+
     <!-- Contact Section -->
     <section id="contact" class="section">
         <div class="container">
